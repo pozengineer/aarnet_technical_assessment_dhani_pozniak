@@ -13,7 +13,7 @@ python-decouple==3.8
 django-extensions==3.2.3
 ipython>=8.0.0
 psycopg2-binary>=2.9.0,<3.0
-drf-spectacular>=0.15.1,<0.16
+drf-spectacular>=0.26.0,<0.27
 isort==5.13.2
 flake8==6.1.0
 darker==1.7.2
