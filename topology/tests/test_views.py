@@ -1,6 +1,7 @@
 """
 Unit tests for topology views.
 """
+import logging
 
 from django.test import TestCase
 from rest_framework import status
@@ -128,6 +129,73 @@ class DeviceViewSetTests(TestCase):
         devices = Device.objects.filter(name='Router-01')
         self.assertTrue(devices.exists())
         self.assertEqual(devices.first().serial_number, 'SN123456')
+
+    def test_device_retrieve_logging(self):
+        """Test that retrieve logs device access."""
+        client = APIClient()
+        with self.assertLogs('topology', level=logging.INFO) as log:
+            response = client.get(f'/api/devices/{self.device.id}/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            any(
+                f'Retrieving device with ID: {self.device.id}' in message
+                for message in log.output
+            ),
+            f"Expected log message not found. Logs: {log.output}"
+        )
+        self.assertTrue(
+            any(
+                f'Successfully retrieved device: {self.device.id}' in message
+                for message in log.output
+            ),
+            f"Expected success log message not found. Logs: {log.output}"
+        )
+
+    def test_device_list_logging(self):
+        """Test that list logs device fetching with count."""
+        # Create additional devices for testing
+        Device.objects.create(
+            name='Router-03',
+            site=self.site,
+            serial_number='SN999999'
+        )
+        Device.objects.create(
+            name='Switch-01',
+            site=self.site,
+            serial_number='SN888888'
+        )
+
+        client = APIClient()
+        with self.assertLogs('topology', level=logging.INFO) as log:
+            response = client.get('/api/devices/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Verify "Fetching all devices" log message exists
+        self.assertIn(
+            'INFO:topology.views:Fetching all devices',
+            log.output
+        )
+
+        # Verify device count is logged
+        logged_count_message = [msg for msg in log.output if 'Retrieved' in msg and 'devices' in msg]
+        self.assertTrue(
+            len(logged_count_message) > 0,
+            f"Expected 'Retrieved X devices' in logs. Logs: {log.output}"
+        )
+
+        # Extract and verify the logged count
+        logged_msg = logged_count_message[0]
+        import re
+        match = re.search(r'Retrieved (\d+) devices', logged_msg)
+        self.assertIsNotNone(match, f"Could not parse device count from: {logged_msg}")
+        logged_count = int(match.group(1))
+
+        # Verify response has devices
+        response_count = len(response.data.get('results', response.data))
+        self.assertGreater(response_count, 0)
+        self.assertEqual(logged_count, 4)
 
 
 class InterfaceViewSetTests(TestCase):
