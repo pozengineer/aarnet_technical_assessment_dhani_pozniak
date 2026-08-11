@@ -1,6 +1,7 @@
 """
 Views for network topology API.
 """
+import logging
 
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -11,6 +12,8 @@ from rest_framework.views import APIView
 from .models import Connection, Device, Interface, Site
 from .serializers import (ConnectionSerializer, DeviceSerializer,
                           InterfaceSerializer, SiteSerializer)
+
+logger = logging.getLogger(__name__)
 
 
 class SiteViewSet(viewsets.ModelViewSet):
@@ -25,6 +28,21 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        """Get a single device with logging."""
+        device_id = kwargs.get('pk')
+        logger.info(f"Retrieving device with ID: {device_id}")
+        response = super().retrieve(request, *args, **kwargs)
+        logger.info(f"Successfully retrieved device: {device_id}")
+        return response
+
+    def list(self, request, *args, **kwargs):
+        """Get all devices with logging."""
+        logger.info("Fetching all devices")
+        response = super().list(request, *args, **kwargs)
+        logger.info(f"Retrieved {len(response.data)} devices")
+        return response
 
 
 class InterfaceViewSet(viewsets.ModelViewSet):
