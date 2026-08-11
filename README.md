@@ -173,7 +173,7 @@ Use these endpoints to explore and test all available API operations with automa
 
 ### Prerequisites
 - Docker and Docker Compose (recommended)
-- Python 3.11+ (for local development)
+- Python 3.13+ (for local development)
 - PostgreSQL 15+ (if running without Docker)
 
 ### Branch Management
