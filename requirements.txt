@@ -1,0 +1,23 @@
+# Project Requirements
+# Python 3.13.12
+
+pytest>=7.4.0,<8.0.0
+pytest-django>=4.5.0,<5.0.0
+pytest-cov>=4.0.0,<5.0.0
+debugpy>=1.8.0,<2.0.0
+asgiref==3.11.1
+Django>=4.2,<5.0
+sqlparse==0.5.5
+djangorestframework>=3.14.0,<4.0
+python-decouple==3.8
+django-extensions==3.2.3
+ipython>=8.0.0
+psycopg2-binary>=2.9.0,<3.0
+drf-spectacular>=0.15.1,<0.16
+isort==5.13.2
+flake8==6.1.0
+darker==1.7.2
+black==24.1.1
+autopep8==2.0.4
+python-dotenv==1.2.2
+gunicorn==21.2.0
