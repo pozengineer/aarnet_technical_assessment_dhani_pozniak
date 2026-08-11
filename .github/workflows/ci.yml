@@ -26,10 +26,10 @@ jobs:
           - 5432:5432
 
     steps:
-    - uses: actions/checkout@v4.2.0
+    - uses: actions/checkout@v4
 
     - name: Set up Python 3.13
-      uses: actions/setup-python@v5.1.0
+      uses: actions/setup-python@v5
       with:
         python-version: '3.13'
         cache: 'pip'
@@ -61,9 +61,9 @@ jobs:
         pytest topology/tests/ --cov=topology --cov-report=term-missing --cov-report=xml -v
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v4
       with:
-        file: ./coverage.xml
+        files: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
@@ -73,13 +73,13 @@ jobs:
     needs: test
 
     steps:
-    - uses: actions/checkout@v4.2.0
+    - uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3.5.0
+      uses: docker/setup-buildx-action@v3
 
     - name: Build Docker image
-      uses: docker/build-push-action@v6.0.0
+      uses: docker/build-push-action@v5
       with:
         context: .
         push: false
