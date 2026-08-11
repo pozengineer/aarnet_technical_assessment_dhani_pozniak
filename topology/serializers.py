@@ -3,7 +3,8 @@ Serializers for network topology API.
 """
 
 from rest_framework import serializers
-from .models import Site, Device, Interface, Connection
+
+from .models import Connection, Device, Interface, Site
 
 
 class SiteSerializer(serializers.ModelSerializer):

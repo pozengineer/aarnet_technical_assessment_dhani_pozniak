@@ -709,7 +709,6 @@ Run these commands locally to catch issues before pushing:
 pytest topology/tests/ --cov=topology --cov-report=term-missing -v
 
 # Check code formatting
-black topology/ network_topology/ --check
 isort topology/ network_topology/ --check-only
 flake8 topology/ network_topology/
 

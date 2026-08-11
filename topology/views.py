@@ -2,20 +2,15 @@
 Views for network topology API.
 """
 
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
 
-from .models import Site, Device, Interface, Connection
-from .serializers import (
-    SiteSerializer,
-    DeviceSerializer,
-    InterfaceSerializer,
-    ConnectionSerializer
-)
+from .models import Connection, Device, Interface, Site
+from .serializers import (ConnectionSerializer, DeviceSerializer,
+                          InterfaceSerializer, SiteSerializer)
 
 
 class SiteViewSet(viewsets.ModelViewSet):

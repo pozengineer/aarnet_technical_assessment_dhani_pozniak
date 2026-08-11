@@ -5,7 +5,7 @@ Django admin customization for topology app.
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import Site, Device, Interface, Connection
+from .models import Connection, Device, Interface, Site
 
 
 @admin.register(Site)

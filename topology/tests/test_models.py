@@ -2,10 +2,10 @@
 Unit tests for topology models.
 """
 
-from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.test import TestCase
 
-from topology.models import Site, Device, Interface, Connection
+from topology.models import Connection, Device, Interface, Site
 
 
 class SiteModelTests(TestCase):

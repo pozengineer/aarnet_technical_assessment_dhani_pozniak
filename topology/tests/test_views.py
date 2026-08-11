@@ -3,10 +3,10 @@ Unit tests for topology views.
 """
 
 from django.test import TestCase
-from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
 
-from topology.models import Site, Device, Interface, Connection
+from topology.models import Connection, Device, Interface, Site
 
 
 class SiteViewSetTests(APITestCase):

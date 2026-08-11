@@ -5,13 +5,9 @@ Unit tests for topology serializers.
 from django.test import TestCase
 from rest_framework.test import APITestCase
 
-from topology.models import Site, Device, Interface, Connection
-from topology.serializers import (
-    SiteSerializer,
-    DeviceSerializer,
-    InterfaceSerializer,
-    ConnectionSerializer,
-)
+from topology.models import Connection, Device, Interface, Site
+from topology.serializers import (ConnectionSerializer, DeviceSerializer,
+                                  InterfaceSerializer, SiteSerializer)
 
 
 class SiteSerializerTests(TestCase):

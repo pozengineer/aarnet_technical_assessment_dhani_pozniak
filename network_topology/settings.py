@@ -4,6 +4,7 @@ Django settings for network_topology project.
 
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Load environment variables - prioritize .env.local for local development
