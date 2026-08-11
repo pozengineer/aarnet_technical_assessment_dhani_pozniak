@@ -279,6 +279,12 @@ docker-compose exec -T db psql -U postgres -d network_topology -c "SELECT * FROM
 
 ### Option 2: Local Development Setup
 
+> **Important**: This option requires PostgreSQL to be running. You must start the Docker database container before proceeding:
+> ```bash
+> docker-compose up db -d
+> ```
+> This starts only the database service, allowing you to run the Django development server locally while using PostgreSQL in Docker.
+
 1. **Clone the repository**:
    ```bash
    git clone <repository-url>
@@ -296,18 +302,22 @@ docker-compose exec -T db psql -U postgres -d network_topology -c "SELECT * FROM
    pip install -r requirements.txt
    ```
 
-4. **Create `.env.local` file for local development overrides**:
+4. **Create `.env` file from example**:
    ```bash
-   cp .env.local.example .env.local
+   cp .env.example .env
    ```
 
-   The `.env.local` file uses SQLite by default for local development and overrides the base `.env` configuration:
+   The `.env` file is configured for PostgreSQL by default:
    ```
    DEBUG=True
    SECRET_KEY=dev-secret-key-change-in-production
    ALLOWED_HOSTS=localhost,127.0.0.1
-   DB_ENGINE=django.db.backends.sqlite3
-   DB_NAME=db.sqlite3
+   DB_ENGINE=django.db.backends.postgresql
+   DB_NAME=network_topology
+   DB_USER=postgres
+   DB_PASSWORD=postgres
+   DB_HOST=localhost
+   DB_PORT=5432
    ```
 
 5. **Run migrations**:
@@ -590,6 +600,59 @@ For production deployment:
 
 ## Development
 
+### Logging
+
+The application includes comprehensive logging for API operations:
+
+- **Log Level**: INFO
+- **Logger**: `topology` module logger
+- **Output**: Console output (StreamHandler)
+
+**Logged Operations**:
+- Device retrieval: Logs device ID when retrieving a specific device
+- Device listing: Logs count of devices returned
+
+**Configuration**: Logging is configured in `network_topology/settings.py` with the `LOGGING` dictionary.
+
+**Example Log Output**:
+```
+INFO:topology.views:Fetching all devices
+INFO:topology.views:Retrieved 4 devices
+```
+
+### Code Quality
+
+The project uses industry-standard linting and formatting tools:
+
+#### Flake8 (Linting)
+
+Configuration file: `.flake8`
+
+Ignored rules:
+- `E501`: Line too long
+- `W504`: Line break after binary operator
+
+Run linting check:
+```bash
+flake8 topology/ network_topology/
+```
+
+#### isort (Import Sorting)
+
+Configuration file: `.isort.cfg`
+
+Automatically sorts imports and skips migration files.
+
+Run import check:
+```bash
+isort topology/ network_topology/ --check-only
+```
+
+Auto-fix imports:
+```bash
+isort topology/ network_topology/
+```
+
 ### Running Tests
 
 #### Using pytest (Recommended)
@@ -676,10 +739,16 @@ This project uses GitHub Actions for continuous integration and deployment.
 - Builds Docker image (dry-run to verify build succeeds)
 
 **Requirements for passing**:
-- ✅ All tests pass (90 tests)
-- ✅ Code coverage ≥ 80%
-- ✅ No linting errors (flake8, isort, black)
+- ✅ All tests pass (92 tests with 100% coverage)
+- ✅ Code coverage ≥ 80% (currently 100%)
+- ✅ No linting errors (flake8, isort)
 - ✅ Docker image builds successfully
+
+**Test Coverage Details**:
+- Unit tests for models, serializers, and views
+- Logging tests for device endpoints using `assertLogs`
+- Integration tests for API endpoints
+- Connection tracing tests
 
 #### 2. Docker Build & Push Workflow (`.github/workflows/docker-build.yml`)
 
@@ -708,9 +777,12 @@ Run these commands locally to catch issues before pushing:
 # Run all tests with coverage
 pytest topology/tests/ --cov=topology --cov-report=term-missing -v
 
-# Check code formatting
-isort topology/ network_topology/ --check-only
+# Check code quality
 flake8 topology/ network_topology/
+isort topology/ network_topology/ --check-only
+
+# Auto-fix imports
+isort topology/ network_topology/
 
 # Build Docker image
 docker build -t network-topology-api:test .
