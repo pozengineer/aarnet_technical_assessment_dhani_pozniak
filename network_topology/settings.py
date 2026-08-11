@@ -113,7 +113,6 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Network Topology Tracing API',
     'DESCRIPTION': 'A Django REST Framework API for tracking network infrastructure components and connections',
     'VERSION': '1.0.0',
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
 }
 
 # Django REST Framework
@@ -126,7 +125,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'rest_framework.filters.SearchFilter',
