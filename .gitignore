@@ -36,3 +36,5 @@ media/
 .env
 .env.local
 !.env.example
+.coverage
+htmlcov/
