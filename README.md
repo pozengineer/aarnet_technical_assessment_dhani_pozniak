@@ -657,6 +657,66 @@ conn = Connection.objects.create(
 )
 ```
 
+## CI/CD Workflows
+
+This project uses GitHub Actions for continuous integration and deployment.
+
+### Workflows
+
+#### 1. CI Workflow (`.github/workflows/ci.yml`)
+
+**Triggered on**: Push to `dev` or `main`, Pull Requests
+
+**Steps**:
+- Sets up Python 3.13 with PostgreSQL service
+- Installs dependencies
+- Runs code quality checks (flake8, isort, black)
+- Executes full test suite with coverage reporting
+- Uploads coverage reports to Codecov
+- Builds Docker image (dry-run to verify build succeeds)
+
+**Requirements for passing**:
+- ✅ All tests pass (90 tests)
+- ✅ Code coverage ≥ 80%
+- ✅ No linting errors (flake8, isort, black)
+- ✅ Docker image builds successfully
+
+#### 2. Docker Build & Push Workflow (`.github/workflows/docker-build.yml`)
+
+**Triggered on**: Push to `main`, Release published
+
+**Steps**:
+- Builds Docker image with optimized cache
+- Authenticates with GitHub Container Registry (ghcr.io)
+- Pushes image with semantic versioning tags
+- Tags include: branch name, semantic version, commit SHA
+
+**Examples**:
+- Push to `main`: `ghcr.io/pozengineer/aarnet_technical_assessment_dhani_pozniak:main`
+- Release v1.0.0: `ghcr.io/pozengineer/aarnet_technical_assessment_dhani_pozniak:1.0.0`
+- Any commit: `ghcr.io/pozengineer/aarnet_technical_assessment_dhani_pozniak:sha-abc123de`
+
+### Workflow Status
+
+Check workflow status in GitHub Actions tab. Failed workflows block PR merges to maintain code quality.
+
+### Local Testing Before Push
+
+Run these commands locally to catch issues before pushing:
+
+```bash
+# Run all tests with coverage
+pytest topology/tests/ --cov=topology --cov-report=term-missing -v
+
+# Check code formatting
+black topology/ network_topology/ --check
+isort topology/ network_topology/ --check-only
+flake8 topology/ network_topology/
+
+# Build Docker image
+docker build -t network-topology-api:test .
+```
+
 ## License
 
 This project is provided as-is for educational and assessment purposes.
